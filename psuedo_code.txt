@@ -1,0 +1,15 @@
+word => ['w', 'wo', 'wor', 'word']
+word goes into dicitonary
+
+w node points to wo which points to wor, po
+
+
+{w => ['wo', 'wor', 'word'], 'wo' => ['wor', 'word'], 'wor'} does dictionary include it? then return when searching
+
+wo => 'wor', 'word'
+
+wor => 'word'
+
+
+counter = 0
+hash[arr[counter]] = arr[counter..-1]

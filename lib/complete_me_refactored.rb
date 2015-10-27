@@ -1,6 +1,6 @@
 require 'pry'
 class CompleteMe
-  attr_accessor :links, :word, :data, :root
+  attr_accessor :links, :word, :data
 
   def initialize
     @root = Node.new("")
@@ -13,75 +13,75 @@ class CompleteMe
   def count
     @root.count
   end
+
+
+
+  # def parsed_word(word)
+  #   length = word.length
+  #   arr = []
+  #   counter = 0
+  #   loop do
+  #     arr << word[0..counter]
+  #     counter += 1
+  #     break if counter == length
+  #   end
+  #   arr
+  # end
 end
 
 class Node
-  attr_reader :links, :data
-  attr_accessor :rank, :name, :word_indicator, :ranking_array
+  attr_reader :links
+  attr_accessor :rank, :name, :word_indicator
 
-  def initialize(data)
+  def initialize(data, name=data[0])
     @data = data
     @links = {}
     @word_indicator = false
-    @ranking_array = []
     @rank = 0
   end
 
 
   def push(data, counter=0)
-    current_position_key = links[data[0..counter]]
-    if links[data[0..counter]] == nil
-      links[data[0..counter]] = Node.new(data[0..counter + 1])
+    current_position_key  = links[data[0..counter]]
+
+    if node_doesnt_exist?(current_position_key)
+      current_position_key = Node.new(data[0..counter + 1])
+      # no_word_match_protocol(current_position_key, data, counter)
+      # return current_position_key
     end
-    continue_processing(data, counter)
+
+    no_word_match_protocol(current_position_key, data, counter)
   end
 
-  def continue_processing(data, counter)
-    word = links[data[0..counter]]
-    if data[counter + 2] == nil
+  def no_word_match_protocol(current_position_key, data, counter)
+    if data[counter+2] == nil
       # binding.pry
       # self.word_indicator = true
-      # links[data[0..counter]]
-      word.word_indicator = true
-      rank_words(word)
+      current_position_key.word_indicator = true
     else
-      links[data[0..counter]].push(data, counter + 1)
+      current_position_key.push(data, counter + 1)
     end
   end
 
-  def rank_words(word, counter=0)
-    if word.ranking_array.empty? || word.ranking_array[counter] == nil
-      word.ranking_array << word
-    elsif word.rank > ranking_array[counter].rank
-      word.ranking_array.insert(word, counter)
-    else
-      rank_words(word, counter + 1)
-    end
+  def node_doesnt_exist?(key)
+    key == nil
   end
 
   def count
-    if data == "" && links.empty?
-      0
-    elsif links.empty?
-      1
-    elsif word_indicator == true
-      1 + links.values[0].count
+    # binding.pry
+    if word_indicator == true
+      # binding.pry
+      1 + links.keys.count
+      if links != {}
+        links.keys.count
+      end
     else
-      links.values[0].count
+      binding.pry
+      0 + links.keys.count
     end
   end
 end
 
-
-    # if word_indicator == true
-    #   # binding.pry
-    #   1 + links.keys.count
-    #   if links != {}
-    #     links.keys.count
-    #   end
-    # else
-    #   0 + links.keys.count
-    # end
 
   #
   #     if left == nil

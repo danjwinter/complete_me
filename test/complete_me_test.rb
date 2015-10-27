@@ -22,3 +22,10 @@ class CompleteMeTest < Minitest::Test
   #   assert_equal ["wo", "wor", "word", "words"], @complete.autocomplete["wo"]
   # end
 end
+
+
+
+require 'csv'
+
+csv = csv.read('/addresses/addresses,csv', :headers=>true)
+csv["FULL_ADDRESS"] #this gives you array with addresses for each element
