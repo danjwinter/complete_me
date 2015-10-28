@@ -85,6 +85,12 @@ class CompleteMeTest < Minitest::Test
     assert_equal ["walrus", "wacky"], @complete.suggest("w")
   end
 
+  def test_it_changes_rank_when_selected_multiple_times
+    @complete.insert("wacky")
+    @complete.insert("walrus")
+  end
+
+
 end
 
 
