@@ -80,6 +80,7 @@ class CompleteMeTest < Minitest::Test
   def test_it_changes_rank_when_selected
     @complete.insert("wacky")
     @complete.insert("walrus")
+    assert_equal ["wacky", "walrus"], @complete.suggest("w")
     @complete.select("w", "walrus")
     assert_equal ["walrus", "wacky"], @complete.suggest("w")
   end
