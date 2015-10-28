@@ -51,6 +51,26 @@ class CompleteMeTest < Minitest::Test
     @complete.insert("a")
     assert @complete.root.links["a"].word_indicator
   end
+
+  def test_it_can_count_zero_words
+    assert_equal 0, @complete.count
+  end
+
+  def test_it_can_count_one_word
+    @complete.insert("ab")
+    assert_equal 1, @complete.count
+  end
+
+  def test_it_can_count_multiple_words
+    @complete.insert("ab")
+    @complete.insert("ad")
+    assert_equal 2, @complete.count
+    @complete.insert("word")
+    @complete.insert("words")
+    @complete.insert("a")
+    assert_equal 5, @complete.count
+  end
+
   # def test_it_adds_to_hash_when_adding_words_and_does_not_override
   #   @complete.create_hash("words")
   #   @complete.create_hash("words")
