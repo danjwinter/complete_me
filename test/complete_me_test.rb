@@ -9,12 +9,47 @@ class CompleteMeTest < Minitest::Test
     @complete = CompleteMe.new
   end
 
-  def test_it_can_parse_word
-    assert_equal ["w", "wo", "wor", "word"], @complete.parsed_word("word")
-  end
+  # def test_it_can_parse_word
+  #   assert_equal ["w", "wo", "wor", "word"], @complete.parsed_word("word")
+  # end
 
   def test_it_can_push_word
-    assert_equal 0, @complete.push("word")
+    @complete.insert("word")
+    # binding.pry
+    assert_equal "w", @complete.root.links["w"].data
+    assert_equal "wo", @complete.root.links["w"].links["wo"].data
+    # binding.pry
+    assert_equal "wor", @complete.root.links["w"].links["wo"].links["wor"].data
+    assert_equal "word", @complete.root.links["w"].links["wo"].links["wor"].links["word"].data
+    assert_equal({}, @complete.root.links["w"].links["wo"].links["wor"].links["word"].links)
+  end
+
+  def test_it_can_push_multiple_words_that_do_not_share_letters
+    @complete.insert("ab")
+    @complete.insert("cd")
+
+    assert_equal "a", @complete.root.links["a"].data
+    assert_equal "ab", @complete.root.links["a"].links["ab"].data
+    assert_equal "c", @complete.root.links["c"].data
+    assert_equal "cd", @complete.root.links["c"].links["cd"].data
+  end
+
+  def test_it_can_insert_multiple_words_that_share_letters
+    @complete.insert("ab")
+    @complete.insert("ad")
+    assert_equal "a", @complete.root.links["a"].data
+    assert_equal "ab", @complete.root.links["a"].links["ab"].data
+    assert_equal "ad", @complete.root.links["a"].links["ad"].data
+  end
+
+  def test_it_can_flip_word_indicator
+    @complete.insert("ab")
+    @complete.insert("ad")
+    assert @complete.root.links["a"].links["ab"].word_indicator
+    assert @complete.root.links["a"].links["ad"].word_indicator
+    refute @complete.root.links["a"].word_indicator
+    @complete.insert("a")
+    assert @complete.root.links["a"].word_indicator
   end
   # def test_it_adds_to_hash_when_adding_words_and_does_not_override
   #   @complete.create_hash("words")
@@ -24,8 +59,8 @@ class CompleteMeTest < Minitest::Test
 end
 
 
-
-require 'csv'
-
-csv = csv.read('/addresses/addresses,csv', :headers=>true)
-csv["FULL_ADDRESS"] #this gives you array with addresses for each element
+#
+# require 'csv'
+#
+# csv = csv.read('/addresses/addresses,csv', :headers=>true)
+# csv["FULL_ADDRESS"] #this gives you array with addresses for each element

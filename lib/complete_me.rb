@@ -1,63 +1,84 @@
 require 'pry'
 class CompleteMe
-  attr_accessor :links, :word, :data, :root
+  attr_accessor :root
 
   def initialize
     @root = Node.new("")
   end
 
-  def push(data)
-    @root.push(data)
+  def insert(data)
+    @root.insert(data)
   end
 
   def count
     @root.count
   end
+
+  def suggest(prefix)
+    @root.suggest(prefix)
+  end
 end
 
 class Node
   attr_reader :links, :data
-  attr_accessor :rank, :name, :word_indicator, :ranking_array
+  attr_accessor :word_indicator
 
   def initialize(data)
     @data = data
     @links = {}
     @word_indicator = false
-    @ranking_array = []
     @rank = 0
   end
 
 
-  def push(data, counter=0)
-    current_position_key = links[data[0..counter]]
-    if links[data[0..counter]] == nil
-      links[data[0..counter]] = Node.new(data[0..counter + 1])
+  def insert(value, counter=0)
+    if links[value[0..counter]].nil?
+      links[value[0..counter]] = Node.new(value[0..counter])
     end
-    continue_processing(data, counter)
+    if value[counter + 1].nil?
+      links[value[0..counter]].word_indicator = true
+    else
+      links[value[0..counter]].insert(value, counter + 1)
+    end
   end
 
   def continue_processing(data, counter)
-    word = links[data[0..counter]]
-    if data[counter + 2] == nil
+    # word = links[data[0..counter]]
+    # binding.pry
+    # if data[counter + 2] == nil
+    #   # binding.pry
+    #   # self.word_indicator = true
+    #   # links[data[0..counter]]
+    #   word.word_indicator = true
       # binding.pry
-      # self.word_indicator = true
-      # links[data[0..counter]]
-      word.word_indicator = true
-      rank_words(word)
-    else
-      links[data[0..counter]].push(data, counter + 1)
-    end
+      # @root.insert_into_ranking_array(self.links.values[0])
+    #   # rank_words(word)
+    # else
+    #  ### links[data[0..counter]].push(data, counter + 1)
+    # end
   end
 
-  def rank_words(word, counter=0)
-    if word.ranking_array.empty? || word.ranking_array[counter] == nil
-      word.ranking_array << word
-    elsif word.rank > ranking_array[counter].rank
-      word.ranking_array.insert(word, counter)
-    else
-      rank_words(word, counter + 1)
-    end
-  end
+  # def insert_into_ranking_array(node)
+  #   binding.pry
+  #   if node.data == data
+  #     rank_words(node)
+  #   elsif word_indicator == true
+  #     binding.pry
+  #     rank_words(node)
+  #   else
+  #     links.values[0].insert_into_ranking_array(value)
+  #   end
+  # end
+
+  # def rank_words(word, counter=0)
+  #   if word.ranking_array.empty? || word.ranking_array[counter] == nil
+  #     word.ranking_array << word
+  #   elsif word.rank > ranking_array[counter].rank
+  #     word.ranking_array.insert(word, counter)
+  #   else
+  #     rank_words(word, counter + 1)
+  #   end
+  # end
 
   def count
     if data == "" && links.empty?
@@ -65,11 +86,45 @@ class Node
     elsif links.empty?
       1
     elsif word_indicator == true
-      1 + links.values[0].count
+      1 + (links.values.each {|value| value.count}).reduce(&:+)
     else
-      links.values[0].count
+      (links.values.each {|value| value.count}).reduce(&:+)
     end
   end
+
+  def suggest(prefix, counter=0, ranking_array=[])
+    if word_indicator == true && data.include?(prefix)
+      if ranking_array.empty? || ranking_array[counter].nil?
+
+        ranking_array << self
+      # elsif rank >= ranking_array[counter].rank
+      #   ranking_array.insert(self, counter)
+      # else
+      #   suggest(prefix, counter + 1)
+      end
+    # elsif links.empty?
+    #   "not a prefix"
+    else
+      links.values[0].suggest(prefix, counter, ranking_array)
+    end
+    # binding.pry
+    return ranking_array
+  end
+
+  #
+  # def continue_processing(data, counter)
+  #   word = links[data[0..counter]]
+  #   if data[counter + 2] == nil
+  #     # binding.pry
+  #     # self.word_indicator = true
+  #     # links[data[0..counter]]
+  #     word.word_indicator = true
+  #     rank_words(word)
+  #   else
+  #     links[data[0..counter]].push(data, counter + 1)
+  #   end
+  # end
+
 end
 
 
