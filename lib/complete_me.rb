@@ -17,6 +17,10 @@ class CompleteMe
   def suggest(prefix)
     @root.suggest(prefix)
   end
+
+  def select(prefix, word)
+    @root.select(prefix, word)
+  end
 end
 
 class Node
@@ -67,7 +71,7 @@ class Node
       if ranking_array.empty? || ranking_array[counter].nil?
         ranking_array << [self.data, self.rank]
       elsif rank > ranking_array[counter][1]
-        ranking_array.insert([self.data, self.rank], counter)
+        ranking_array.insert(counter, [self.data, self.rank])
       else
         find_words_with_rank(prefix, counter + 1, ranking_array)
       end
@@ -79,6 +83,11 @@ class Node
   end
 
 def select(prefix, word)
+  if data == word
+    self.rank += 1
+  elsif links != {}
+    links.values.each {|value| value.select(prefix, word)}
+  end
 end
 
 end

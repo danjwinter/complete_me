@@ -9,10 +9,6 @@ class CompleteMeTest < Minitest::Test
     @complete = CompleteMe.new
   end
 
-  # def test_it_can_parse_word
-  #   assert_equal ["w", "wo", "wor", "word"], @complete.parsed_word("word")
-  # end
-
   def test_it_can_push_word
     @complete.insert("word")
     # binding.pry
@@ -81,11 +77,13 @@ class CompleteMeTest < Minitest::Test
     assert_equal ["word", "wombat"], @complete.suggest("wo")
   end
 
-  # def test_it_adds_to_hash_when_adding_words_and_does_not_override
-  #   @complete.create_hash("words")
-  #   @complete.create_hash("words")
-  #   assert_equal ["wo", "wor", "word", "words"], @complete.autocomplete["wo"]
-  # end
+  def test_it_changes_rank_when_selected
+    @complete.insert("wacky")
+    @complete.insert("walrus")
+    @complete.select("w", "walrus")
+    assert_equal ["walrus", "wacky"], @complete.suggest("w")
+  end
+
 end
 
 
