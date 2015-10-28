@@ -68,6 +68,7 @@ class CompleteMeTest < Minitest::Test
   end
 
   def test_it_can_suggest_words_from_prefix
+    skip
     @complete.insert("word")
     assert_equal ["word"], @complete.suggest("w")
 
@@ -77,7 +78,23 @@ class CompleteMeTest < Minitest::Test
     assert_equal ["word", "wombat"], @complete.suggest("wo")
   end
 
+  def test_it_can_suggest_words_from_prefix_with_lots_of_other_words
+    skip
+    @complete.insert("word")
+    @complete.insert("wacky")
+    @complete.insert("wombat")
+    @complete.insert("wonky")
+    @complete.insert("wasted")
+    @complete.insert("winter")
+    @complete.insert("waste")
+    @complete.insert("wallow")
+    @complete.insert("wink")
+    assert_equal ["winter", "wink"], @complete.suggest("wi")
+    assert_equal ["word", "wombat", "wonky"], @complete.suggest("wo")
+  end
+
   def test_it_changes_rank_when_selected
+
     @complete.insert("wacky")
     @complete.insert("walrus")
     assert_equal ["wacky", "walrus"], @complete.suggest("w")
@@ -90,7 +107,11 @@ class CompleteMeTest < Minitest::Test
     @complete.insert("walrus")
   end
 
-
+  def test_it_can_find_prefix
+    skip
+    @complete.insert("absolute")
+    assert_equal "ab", @complete.find_prefix("ab")
+  end
 end
 
 
