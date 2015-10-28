@@ -71,6 +71,16 @@ class CompleteMeTest < Minitest::Test
     assert_equal 5, @complete.count
   end
 
+  def test_it_can_suggest_words_from_prefix
+    @complete.insert("word")
+    assert_equal ["word"], @complete.suggest("w")
+
+    @complete.insert("wombat")
+    assert_equal ["word", "wombat"], @complete.suggest("w")
+    @complete.insert("wally")
+    assert_equal ["word", "wombat"], @complete.suggest("wo")
+  end
+
   # def test_it_adds_to_hash_when_adding_words_and_does_not_override
   #   @complete.create_hash("words")
   #   @complete.create_hash("words")

@@ -21,7 +21,7 @@ end
 
 class Node
   attr_reader :links, :data
-  attr_accessor :word_indicator
+  attr_accessor :word_indicator, :rank
 
   def initialize(data)
     @data = data
@@ -54,14 +54,31 @@ class Node
     end
   end
 
-  def suggest(prefix, counter=0, ranking_array=[])
+  def suggest(prefix)
+    new_arr = find_words_with_rank(prefix).map do |word_rank_pair|
+      word_rank_pair[0]
+    end
+    new_arr
+  end
+
+
+  def find_words_with_rank(prefix, counter=0, ranking_array=[])
     if word_indicator == true && data.include?(prefix)
       if ranking_array.empty? || ranking_array[counter].nil?
-        ranking_array << self
+        ranking_array << [self.data, self.rank]
+      elsif rank > ranking_array[counter][1]
+        ranking_array.insert([self.data, self.rank], counter)
+      else
+        find_words_with_rank(prefix, counter + 1, ranking_array)
       end
-    else
-      links.values[0].suggest(prefix, counter, ranking_array)
     end
-    return ranking_array
+      unless links.nil?
+        links.values.map {|value| value.find_words_with_rank(prefix, counter, ranking_array)}
+      end
+    ranking_array
   end
+
+def select(prefix, word)
+end
+
 end
