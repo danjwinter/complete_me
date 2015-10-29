@@ -99,5 +99,10 @@ class CompleteMeTest < Minitest::Test
     @complete.select("w", "wombat")
     assert_equal ["wombat", "walrus", "wacky"], @complete.suggest("w")
   end
+
+  def test_it_can_suggest_words_that_contain_phrase
+      @complete.populate("wacky\nwallow\nwaste\nwasted\nwink\nwinter\nwombat\nwonky\nword")
+      assert_equal ["waste", "wasted"], @complete.contain("st")
+  end
 end
 
