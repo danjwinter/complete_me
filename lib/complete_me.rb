@@ -83,13 +83,7 @@ class Node
 
   def find_words_with_rank(prefix, counter=0, ranking_array=[])
     if word_indicator == true && data.include?(prefix)
-      if ranking_array.empty? || ranking_array[counter].nil?
-        ranking_array << [self.data, self.rank]
-      elsif rank > ranking_array[counter][1]
-        ranking_array.insert(counter, [self.data, self.rank])
-      else
-        find_words_with_rank(prefix, counter + 1, ranking_array)
-      end
+      put_words_in_array(prefix, counter, ranking_array)
     end
       unless links.nil?
         links.values.map {|value| value.find_words_with_rank(prefix, counter, ranking_array)}
@@ -98,7 +92,6 @@ class Node
   end
 
   def find_prefix(prefix, counter=0)
-    # binding.pry
     if data == prefix
       return self
     elsif data == prefix[0..counter]
@@ -106,8 +99,6 @@ class Node
     else
       unless links[prefix[0..counter]].nil?
         links[prefix[0..counter]].find_prefix(prefix, counter)
-      # unless prefix[counter + 1].nil?
-      #   links.values.each {|node| node.find_prefix(prefix, counter + 1)}
       end
     end
   end
@@ -121,24 +112,23 @@ class Node
   end
 
   def find_words_with_prefix_rank(prefix, counter=0, ranking_array=[])
-    # find_prefix(prefix)
     if word_indicator == true && data.start_with?(prefix)
-      if ranking_array.empty? || ranking_array[counter].nil?
-        unless ranking_array.include?([self.data, self.rank])
-          ranking_array << [self.data, self.rank]
-        end
-      elsif rank > ranking_array[counter][1]
-        unless ranking_array.include?([self.data, self.rank])
-          ranking_array.insert(counter, [self.data, self.rank])
-        end
-      else
-        find_words_with_rank(prefix, counter + 1, ranking_array)
-      end
+      put_words_in_array(prefix, counter, ranking_array)
     end
       unless links.nil?
         links.values.map {|value| value.find_words_with_prefix_rank(prefix, counter, ranking_array)}
       end
     ranking_array.uniq
+  end
+
+  def put_words_in_array(prefix, counter, ranking_array)
+    if ranking_array.empty? || ranking_array[counter].nil?
+        ranking_array << [self.data, self.rank]
+    elsif rank > ranking_array[counter][1]
+        ranking_array.insert(counter, [self.data, self.rank])
+    else
+      find_words_with_rank(prefix, counter + 1, ranking_array)
+    end
   end
 
   def select(prefix, word)

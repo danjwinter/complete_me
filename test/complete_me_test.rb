@@ -11,10 +11,8 @@ class CompleteMeTest < Minitest::Test
 
   def test_it_can_push_word
     @complete.insert("word")
-    # binding.pry
     assert_equal "w", @complete.root.links["w"].data
     assert_equal "wo", @complete.root.links["w"].links["wo"].data
-    # binding.pry
     assert_equal "wor", @complete.root.links["w"].links["wo"].links["wor"].data
     assert_equal "word", @complete.root.links["w"].links["wo"].links["wor"].links["word"].data
     assert_equal({}, @complete.root.links["w"].links["wo"].links["wor"].links["word"].links)
@@ -68,33 +66,22 @@ class CompleteMeTest < Minitest::Test
   end
 
   def test_it_can_suggest_words_from_prefix
-    skip
-    @complete.insert("word")
-    assert_equal ["word"], @complete.suggest("w")
-
     @complete.insert("wombat")
-    assert_equal ["word", "wombat"], @complete.suggest("w")
+    assert_equal ["wombat"], @complete.suggest("w")
+
+    @complete.insert("word")
+    assert_equal ["wombat", "word"], @complete.suggest("w")
     @complete.insert("wally")
-    assert_equal ["word", "wombat"], @complete.suggest("wo")
+    assert_equal ["wombat", "word"], @complete.suggest("wo")
   end
 
   def test_it_can_suggest_words_from_prefix_with_lots_of_other_words
-    skip
-    @complete.insert("word")
-    @complete.insert("wacky")
-    @complete.insert("wombat")
-    @complete.insert("wonky")
-    @complete.insert("wasted")
-    @complete.insert("winter")
-    @complete.insert("waste")
-    @complete.insert("wallow")
-    @complete.insert("wink")
-    assert_equal ["winter", "wink"], @complete.suggest("wi")
-    assert_equal ["word", "wombat", "wonky"], @complete.suggest("wo")
+    @complete.populate("wacky\nwallow\nwaste\nwasted\nwink\nwinter\nwombat\nwonky\nword")
+    assert_equal ["wink", "winter"], @complete.suggest("wi")
+    assert_equal ["wombat", "wonky", "word"], @complete.suggest("wo")
   end
 
   def test_it_changes_rank_when_selected
-
     @complete.insert("wacky")
     @complete.insert("walrus")
     assert_equal ["wacky", "walrus"], @complete.suggest("w")
@@ -105,18 +92,12 @@ class CompleteMeTest < Minitest::Test
   def test_it_changes_rank_when_selected_multiple_times
     @complete.insert("wacky")
     @complete.insert("walrus")
-  end
-
-  def test_it_can_find_prefix
-    skip
-    @complete.insert("absolute")
-    assert_equal "ab", @complete.find_prefix("ab")
+    @complete.insert("wombat")
+    assert_equal ["wacky", "walrus", "wombat"], @complete.suggest("w")
+    @complete.select("w", "walrus")
+    @complete.select("w", "wombat")
+    @complete.select("w", "wombat")
+    assert_equal ["wombat", "walrus", "wacky"], @complete.suggest("w")
   end
 end
 
-
-#
-# require 'csv'
-#
-# csv = csv.read('/addresses/addresses,csv', :headers=>true)
-# csv["FULL_ADDRESS"] #this gives you array with addresses for each element
