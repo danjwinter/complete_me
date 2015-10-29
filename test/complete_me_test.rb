@@ -102,7 +102,7 @@ class CompleteMeTest < Minitest::Test
 
   def test_it_can_suggest_words_that_contain_phrase
       @complete.populate("wacky\nwallow\nwaste\nwasted\nwink\nwinter\nwombat\nwonky\nword")
-      assert_equal ["waste", "wasted"], @complete.contain("st")
+      assert_equal ["waste", "wasted"], @complete.contains("st")
   end
 end
 

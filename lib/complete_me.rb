@@ -30,8 +30,8 @@ class CompleteMe
     nil
   end
 
-  def contain(prefix)
-    @root.contain(prefix)
+  def contains(prefix)
+    @root.contains(prefix)
   end
 
   def find_prefix(prefix)
@@ -74,7 +74,7 @@ class Node
     end
   end
 
-  def contain(prefix)
+  def contains(prefix)
     new_arr = find_words_with_rank(prefix).map do |word_rank_pair|
       word_rank_pair[0]
     end
